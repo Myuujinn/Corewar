@@ -1,0 +1,74 @@
+#!/bin/bash
+# MouliBash 4000 ! Make your own tests and see if your projects are bugged!
+# Made by Victor LE DANTEC
+
+ERRORSTOP=0 #1 makes the script stop at KO | 0 makes it continue even if KO
+
+## Fancy logo
+tput bold
+tput setaf 7
+echo -e "####################################"
+echo -n "#"
+tput setaf 9
+tput setaf 6
+echo -n " MouliBash 4000 - Corewar Edition "
+tput setaf 9
+tput setaf 7
+tput bold setaf 7
+echo "#"
+echo -n "#"
+tput setaf 6
+echo -n "        by Victor Le Dantec       "
+tput setaf 7
+tput bold setaf 7
+echo "#"
+echo -e "####################################"
+
+
+## Check if asm is here
+(ls | grep "asm" > /dev/null)
+RESULT2=$( echo "$?" )
+if [ $RESULT2 != "0" ]
+then
+    echo "Put your asm in the same directory as MouliBash 4000!"
+    exit 0
+fi
+
+## Check if ref_asm is here
+(ls | grep "ref_asm" > /dev/null)
+RESULT2=$( echo "$?" )
+if [ $RESULT2 != "0" ]
+then
+    echo "Put the official ref_asm in the same directory as MouliBash 4000!"
+    exit 0
+fi
+
+## Basically checks champions in tests/ and diffs with the real ones
+for TEST in tests/*
+do
+    tput bold
+    tput setaf 7
+    echo "$TEST :"
+    tput bold
+    tput setaf 2
+    ./ref_asm $TEST 
+    TEST2=$(basename $TEST .s)
+    (mv $TEST2.cor $TEST2.cor.ref 2>&1) > /dev/null
+    ./asm $TEST
+    (diff $TEST2.cor $TEST2.cor.ref 2>&1) > /dev/null
+    RESULT=$( echo "$?" )
+    rm -rf $TEST2.cor $TEST2.cor.ref
+    echo -e -n "\t\t\t"
+    if [ $RESULT != "0" ]
+    then
+        tput bold
+        tput setaf 1
+        echo "KO!"
+        if [ $ERRORSTOP != "0" ]
+        then
+            break
+        fi
+    else
+        echo "OK!"
+    fi
+done
