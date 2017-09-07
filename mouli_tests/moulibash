@@ -5,22 +5,12 @@
 ERRORSTOP=0 #1 makes the script stop at KO | 0 makes it continue even if KO
 
 ## Fancy logo
-tput bold
-tput setaf 7
 echo -e "####################################"
 echo -n "#"
-tput setaf 9
-tput setaf 6
 echo -n " MouliBash 4000 - Corewar Edition "
-tput setaf 9
-tput setaf 7
-tput bold setaf 7
 echo "#"
 echo -n "#"
-tput setaf 6
 echo -n "        by Victor Le Dantec       "
-tput setaf 7
-tput bold setaf 7
 echo "#"
 echo -e "####################################"
 
@@ -46,11 +36,7 @@ fi
 ## Basically checks champions in tests/ and diffs with the real ones
 for TEST in tests/*
 do
-    tput bold
-    tput setaf 7
     echo "$TEST :"
-    tput bold
-    tput setaf 2
     ./ref_asm $TEST 
     TEST2=$(basename $TEST .s)
     (mv $TEST2.cor $TEST2.cor.ref 2>&1) > /dev/null
@@ -61,8 +47,6 @@ do
     echo -e -n "\t\t\t"
     if [ $RESULT != "0" ]
     then
-        tput bold
-        tput setaf 1
         echo "KO!"
         if [ $ERRORSTOP != "0" ]
         then
